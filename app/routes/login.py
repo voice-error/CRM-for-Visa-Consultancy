@@ -15,39 +15,40 @@ def index():
         #getting the form data
         username_input = request.form.get("username")
         password_input = request.form.get("password")
-
-        conn = get_connection()
-
+            
+        
+        
         try:
-            with conn.cursor() as cursor:
-                sql = "SELECT * FROM user WHERE username = %s"
-                cursor.execute(sql, (username_input,))
-                user = cursor.fetchone()
-                if user == None:
-                    flash('Invalid username or password', 'danger')
-                else:
-                    if username_input==(user['username']) and password_input==(user['password']):
-                        role = user['role_id']
-                        if role == 3:
-                            flash('Welcome  Admin ] ', 'success')
-                            return render_template("admin.html")
-                        elif role == 2:
-                            flash('Welcome  Agent ] ', 'success')
-                            return render_template("agent.html")
-                        elif role == 4:
-                            flash('Welcome  User ] ', 'success')
-                            return render_template("user.html")
-                        elif role == 1:
-                            flash('Welcome Client ] ', 'success')
-                            return render_template("client.html")
-                        else:
-                            flash('Unknown role.', 'danger')
-                            return render_template("login.html")
-                    else:
+            with get_connection() as conn:
+                with conn.cursor() as cursor:
+                    sql = "SELECT * FROM user WHERE username = %s"
+                    cursor.execute(sql, (username_input,))
+                    user = cursor.fetchone()
+                    if user == None:
                         flash('Invalid username or password', 'danger')
-                        return render_template("login.html")
-        finally:
-            conn.close()
+                    else:
+                        if username_input==(user['username']) and password_input==(user['password']):
+                            role = user['role_id']
+                            if role == 3:
+                                flash('Welcome  Admin', 'success')
+                                return render_template("admin.html")
+                            elif role == 2:
+                                flash('Welcome  Agent ', 'success')
+                                return render_template("agent.html")
+                            elif role == 4:
+                                flash('Welcome  User', 'success')
+                                return render_template("user.html")
+                            elif role == 1:
+                                flash('Welcome Client', 'success')
+                                return render_template("client.html")
+                            else:
+                                flash('Unknown role.', 'danger')
+                                return render_template("login.html")
+                        else:
+                            flash('Invalid username or password', 'danger')
+                            return render_template("login.html")
+        except Exception as e:
+            flash("503 Service Unavailable", 'info')
     return render_template("login.html")
 
 

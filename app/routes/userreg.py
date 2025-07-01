@@ -15,29 +15,30 @@ def register():
         username_input = request.form.get("username")
         password_input = request.form.get("password")
 
-        conn = get_connection()
+        
         try:
-            with conn.cursor() as cursor:
-                sql = "SELECT * FROM user WHERE username = %s"
-                cursor.execute(sql, (username_input,))
-                user = cursor.fetchone()
-                if user == None:
-                    with conn.cursor() as cursor:
-                        sql = "INSERT INTO user (username, password) VALUES (%s, %s)"
-                        cursor.execute(sql, (username_input, password_input,))
-                        conn.commit()
-                        sql = "SELECT * FROM user WHERE username = %s"
-                        cursor.execute(sql, (username_input,))
-                        user = cursor.fetchone()
-                        sql = "INSERT INTO client (user_id, first_name, last_name,phone) VALUES ( %s, %s, %s, %s)"
-                        cursor.execute(sql, (user['id'],first_name, last_name, phone,))
-                        conn.commit()
-                        flash("Registration successful","success")
-                        return redirect(url_for("index"))
-                else:
-                    flash('User already exists','danger')                   
-        finally:
-            conn.close()      
+            with get_connection() as conn:
+                with conn.cursor() as cursor:
+                    sql = "SELECT * FROM user WHERE username = %s"
+                    cursor.execute(sql, (username_input,))
+                    user = cursor.fetchone()
+                    if user == None:
+                        with conn.cursor() as cursor:
+                            sql = "INSERT INTO user (username, password) VALUES (%s, %s)"
+                            cursor.execute(sql, (username_input, password_input,))
+                            conn.commit()
+                            sql = "SELECT * FROM user WHERE username = %s"
+                            cursor.execute(sql, (username_input,))
+                            user = cursor.fetchone()
+                            sql = "INSERT INTO client (user_id, first_name, last_name,phone) VALUES ( %s, %s, %s, %s)"
+                            cursor.execute(sql, (user['id'],first_name, last_name, phone,))
+                            conn.commit()
+                            flash("Registration successful","success")
+                            return redirect(url_for("index"))
+                    else:
+                        flash('User already exists','danger')                   
+        except Exception as e:
+            flash("503 Service Unavailable", 'info')    
     return render_template("userreg.html")
 
 if __name__=="__main__":
