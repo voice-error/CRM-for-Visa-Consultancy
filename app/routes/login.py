@@ -31,16 +31,16 @@ def index():
                             role = user['role_id']
                             if role == 3:
                                 flash('Welcome  Admin', 'success')
-                                return render_template("admin.html")
+                                return render_template("admin/admin.html")
                             elif role == 2:
                                 flash('Welcome  Agent ', 'success')
-                                return render_template("agent.html")
+                                return render_template("agent/agent.html")
                             elif role == 4:
                                 flash('Welcome  User', 'success')
-                                return render_template("user.html")
+                                return render_template("client/user.html")
                             elif role == 1:
                                 flash('Welcome Client', 'success')
-                                return render_template("client.html")
+                                return render_template("client/client.html")
                             else:
                                 flash('Unknown role.', 'danger')
                                 return render_template("login.html")
