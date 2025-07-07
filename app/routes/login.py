@@ -1,10 +1,11 @@
-from flask import Flask, render_template,flash, request
+from flask import Flask,session, render_template,flash, request,redirect,url_for
 import secrets
+from datetime import timedelta
 from app.backend.connection import get_connection
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 app.config['SECRET_KEY'] = secrets.token_hex(16)
-
+app.config['PERSISTENT_SESSIONS'] = timedelta(days =7)
 
 
 
@@ -28,6 +29,7 @@ def index():
                         flash('Invalid username or password', 'danger')
                     else:
                         if username_input==(user['username']) and password_input==(user['password']):
+                            session['user_id'] = user['id']                            
                             role = user['role_id']
                             if role == 3:
                                 flash('Welcome  Admin', 'success')
@@ -39,8 +41,11 @@ def index():
                                 flash('Welcome  User', 'success')
                                 return render_template("client/user.html")
                             elif role == 1:
-                                flash('Welcome Client', 'success')
-                                return render_template("client/client.html")
+                                sql = "SELECT * FROM client WHERE user_id = %s"
+                                cursor.execute(sql, (user['id'],))
+                                user = cursor.fetchone()
+                                session['first_name'] = user['first_name']
+                                return redirect(url_for("clientDashbord"))
                             else:
                                 flash('Unknown role.', 'danger')
                                 return render_template("login.html")

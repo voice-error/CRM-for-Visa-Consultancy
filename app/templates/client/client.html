@@ -6,16 +6,36 @@
     <title>Document</title>
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{{url_for('static', filename='styles/client/client.css')}}" />
+    <style>
+        iframe {
+            width: 80%;
+            height: 500px; 
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
- <header>
+    <header>
         <nav class="navbar">
             <div class="logo">Visa Consultancy</div>
             <ul class="nav-links">
-                <li><a href="#"> Chat with agent </a></li>
-                <li><a href="#"> View progress</a></li>
+                <li><a href="{{url_for('clientChat')}}"> Chat with agent </a></li>
+                <li><a href="{{url_for('clientViewProgress')}}"> View progress</a></li>
             </ul>
         </nav>
     </header>
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} " role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}<br>
+
+
 </body>
 </html>
