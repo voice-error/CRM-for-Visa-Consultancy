@@ -5,7 +5,7 @@ from app.backend.connection import get_connection
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 app.config['SECRET_KEY'] = secrets.token_hex(16)
-app.config['PERSISTENT_SESSIONS'] = timedelta(days =7)
+app.config['PERSISTENT_SESSIONS'] = timedelta(minutes = 1)
 
 
 
@@ -36,8 +36,20 @@ def index():
                                 flash('Welcome  Admin', 'success')
                                 return render_template("admin/admin.html")
                             elif role == 2:
-                                flash('Welcome  Agent ', 'success')
-                                return render_template("agent/agent.html")
+                                sql = "SELECT * FROM agent WHERE user_id = %s"
+                                cursor.execute(sql, (user['id'],))
+                                user = cursor.fetchone()
+                                session['first_name'] = user['first_name']
+
+                                sql = """SELECT id FROM agent WHERE user_id = %s """
+                                cursor.execute(sql, (session['user_id'],))
+                                agent = cursor.fetchone()
+                                session['agent_id'] = agent['id']
+
+                                session['dashbord']="agentDashbord"
+                                
+                                flash(f'Welcome {session["first_name"]}', 'success')
+                                return redirect(url_for("agentDashbord"))
                             elif role == 4:
                                 flash('Welcome  User', 'success')
                                 return render_template("client/user.html")
@@ -47,6 +59,7 @@ def index():
                                 user = cursor.fetchone()
                                 session['first_name'] = user['first_name']
                                 session['dashbord']="clientDashbord"
+                                flash(f'Welcome {session["first_name"]}', 'success')
                                 return redirect(url_for("clientDashbord"))
                             else:
                                 flash('Unknown role.', 'danger')
@@ -55,9 +68,10 @@ def index():
                             flash('Invalid username or password', 'danger')
                             return render_template("login.html")
         except Exception as e:
-            flash("503 Service Unavailable", 'info')
+            flash("503 Service Unavailable", 'danger')
             return render_template("login.html")
-    else:    
+    else:
+        flash('Session Expired', 'info')    
         return render_template("login.html")
 
 

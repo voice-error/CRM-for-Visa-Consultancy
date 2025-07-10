@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update clients progress</title>
+  <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agentfun.css')}}" />
+  <link rel="stylesheet" href="D:\collage\prabin\bca 4th smi\project 2\Visa client relation management system\app\static\styles\agent\agentfun.css" />
+</head>  
+
+<body>
+  <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} " role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}<br>
+    <div class="dashboard-container">  
+
+        <div>
+            <h3><a href="{{url_for('viewClients')}}">Back</a></h3>
+            <h2>Update {{ client.first_name}}'s Progress</h2>
+            <form action="/updateprogress/{{client.id}}" method="POST">
+                <label for="type">Visa Type: Student</label>
+                <lable for="progress">Progress:</lable>
+                <select id="progress" name="progress" class="form-control">
+                    <option value="verifying documents" {% if client.progress  == 'verifying documents' %}selected{% endif %}>Verifying documents</option>
+                    <option value="in progress" {% if client.progress == 'in progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if client.progress == 'completed' %}selected{% endif %}>Visa Issued</option>
+                    <option value="rejected" {% if client.progress == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

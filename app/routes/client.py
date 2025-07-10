@@ -8,9 +8,6 @@ app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.route("/client", methods =["GET", "POST"])
 def clientDashbord():
         if 'user_id' in session:
-            
-            
-            flash(f'Welcome {session["first_name"]}', 'success')
             return render_template("client/client.html")
         else:
             flash('Session Expired', 'info')

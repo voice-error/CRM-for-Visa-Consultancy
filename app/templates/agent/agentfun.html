@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agentfun.css')}}" />
   <link rel="stylesheet" href="D:\collage\prabin\bca 4th smi\project 2\Visa client relation management system\app\static\styles\agent\agentfun.css" />
 </head>  
-</head>
+
 <body>
   <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -21,90 +21,7 @@
             {% endfor %}
         {% endif %}
     {% endwith %}<br>
-  <div class="dashboard-container">
-    <h1>Welcome Agent</h1>
-    <div>
-      <h2>Assigned Clients</h2>
-      <ul id="clients-list"></ul>  
-      <div class="header-info">
-        <p><strong>Consultant:</strong> Nirjang Jaigadi</p>
-        <p><strong>Department:</strong> Immigration Services</p>
-        <p><strong>Role:</strong> Senior Visa Consultant</p>
-      </div>
-
-      <div class="filters">
-        <label for="visaType">Visa Type:</label>
-        <select id="visaType">
-          <option>Student</option>
-          <option>Student</option>
-          <option>Student</option>
-          <option>Student</option>
-          <option>Student</option>
-        </select>
-
-        <label for="status">Status:</label>
-        <select id="status">
-          <option>All</option>
-          <option>In Progress</option>
-          <option>Documents Pending</option>
-          <option>Submitted</option>
-          <option>Approved</option>
-        </select>
-
-        <input type="text" placeholder="Search by name or ID" />
-        <button class="btn">Apply Filters</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Client ID</th>
-            <th>Full Name</th>
-            <th>Visa Type</th>
-            <th>Status</th>
-            <th>Assigned Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>C00123</td>
-            <td>Rajkumar Karki</td>
-            <td>Student Visa</td>
-            <td>In Progress</td>
-            <td>2025-05-22</td>
-            <td><button class="btn">View</button> <button class="btn">Edit</button></td>
-          </tr>
-          <tr>
-            <td>C00456</td>
-            <td>Prabin Lamichhane</td>
-            <td>Student Visa</td>
-            <td>Documents Pending</td>
-            <td>2025-05-15</td>
-            <td><button class="btn">View</button> <button class="btn">Edit</button></td>
-          </tr>
-          <tr>
-            <td>C00789</td>
-            <td>Narendra Chand</td>
-            <td>Student visa</td>
-            <td>Submitted</td>
-            <td>2025-05-10</td>
-            <td><button class="btn">View</button> <button class="btn">Edit</button></td>
-          </tr>
-          <tr>
-            <td>C01001</td>
-            <td>Nirjang Jaigadi</td>
-            <td>Student visa</td>
-            <td>Approved</td>
-            <td>2025-04-28</td>
-            <td><button class="btn">View</button> <button class="btn">Review</button></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <br>
-      <button class="btn">  Assign New Client</button>
-    </div>
+  <div class="dashboard-container">  
 
     <div>
       <h2>Update Client Progress</h2>
