@@ -12,13 +12,14 @@ app.config['PERSISTENT_SESSIONS'] = timedelta(days =7)
 @app.route("/")
 @app.route("/login", methods =["GET", "POST"])
 def index():
-    if request.method =="POST":
+    if "user_id" in session:
+        return redirect(url_for(session['dashbord']))
+    
+    elif request.method =="POST":
         #getting the form data
         username_input = request.form.get("username")
-        password_input = request.form.get("password")
-            
-        
-        
+        password_input = request.form.get("password")          
+              
         try:
             with get_connection() as conn:
                 with conn.cursor() as cursor:
@@ -45,6 +46,7 @@ def index():
                                 cursor.execute(sql, (user['id'],))
                                 user = cursor.fetchone()
                                 session['first_name'] = user['first_name']
+                                session['dashbord']="clientDashbord"
                                 return redirect(url_for("clientDashbord"))
                             else:
                                 flash('Unknown role.', 'danger')
@@ -54,7 +56,9 @@ def index():
                             return render_template("login.html")
         except Exception as e:
             flash("503 Service Unavailable", 'info')
-    return render_template("login.html")
+            return render_template("login.html")
+    else:    
+        return render_template("login.html")
 
 
 if __name__=="__main__":
