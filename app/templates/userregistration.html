@@ -18,8 +18,12 @@
             <h2 class="text-center h4 mb-4">Application Form</h2>
 
             <div class="mb-3">
-              <label for="fullName" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required />
+              <label for="firstname" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="first_name" placeholder="Enter your first name" required />
+            </div>
+            <div class="mb-3">
+              <label for="lastname" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="last_name" placeholder="Enter your last name" required />
             </div>
 
             <div class="mb-3">
@@ -32,15 +36,27 @@
               <select class="form-select" id="visaType" required>
                 <option value="" selected disabled>Select Visa Type</option>
                 <option value="Student">Student</option>
-                <option value="Work">Work</option>
-                <option value="Tourist">Tourist</option>
-                <option value="PR">PR</option>
               </select>
             </div>
 
             <div class="mb-3">
-              <label for="destination" class="form-label">Destination Country</label>
-              <input type="text" class="form-control" id="destination" placeholder="e.g., Australia" required />
+              <label for="destination" class="form-label">destination</label>
+              <select class="form-select" id="destination" required>
+                <option value="" selected disabled>Select destination</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="United States of America">United States of America</option>
+                <option value="Australia">Australia</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="program" class="form-label">program</label>
+              <select class="form-select" id="program" required>                
+                <option value="" selected disabled>Select destination</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="United States of America">United States of America</option>
+                <option value="Australia">Australia</option>
+              </select>
             </div>
 
             <div class="mb-3">

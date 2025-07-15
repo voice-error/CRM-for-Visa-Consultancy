@@ -5,7 +5,7 @@ from app.backend.connection import get_connection
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 app.config['SECRET_KEY'] = secrets.token_hex(16)
-app.config['PERSISTENT_SESSIONS'] = timedelta(minutes = 1)
+app.config['PERSISTENT_SESSIONS'] = timedelta(minutes = 10)
 
 
 

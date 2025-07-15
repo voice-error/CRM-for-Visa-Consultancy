@@ -32,7 +32,7 @@
                 <select id="progress" name="progress" class="form-control">
                     <option value="verifying documents" {% if client.progress  == 'verifying documents' %}selected{% endif %}>Verifying documents</option>
                     <option value="in progress" {% if client.progress == 'in progress' %}selected{% endif %}>In Progress</option>
-                    <option value="completed" {% if client.progress == 'completed' %}selected{% endif %}>Visa Issued</option>
+                    <option value="completed" {% if client.progress == 'completed' %}selected{% endif %}>completed</option>
                     <option value="rejected" {% if client.progress == 'rejected' %}selected{% endif %}>Rejected</option>
                 </select>
                 <button type="submit">Update</button>

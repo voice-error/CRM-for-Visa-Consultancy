@@ -1,0 +1,52 @@
+body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            padding: 20px;
+        }
+        .report-card {
+            background-color: #ffffff;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+            padding: 30px;
+            max-width: 900px; /* Max width for readability */
+            width: 100%;
+        }
+        h2 {
+            color: #007bff; /* Primary blue for heading */
+            font-weight: 600;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        textarea.form-control {
+            min-height: 500px; /* Increased height for the report content */
+            border-radius: 10px; /* Rounded text area */
+            padding: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border: 1px solid #ced4da;
+            resize: vertical; /* Allow vertical resizing */
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: 500;
+            padding: 12px 25px;
+            border-radius: 10px; /* Rounded button */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Button shadow */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+        }
+        #report-msg {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+        }

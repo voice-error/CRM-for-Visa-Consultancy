@@ -77,7 +77,29 @@ def updateProgress(client_id):
             return render_template("agent/updateProgress.html", client = client)
     else:
         flash('Session Expired', 'info')
-        return redirect(url_for("index"))         
+        return redirect(url_for("index"))
+
+app.route("/report", methods =["GET", "POST"])
+def submitReport():
+    if 'user_id' in session:
+        if request.method =="POST":
+            try:
+                with get_connection() as conn:
+                    with conn.cursor() as cursor:                        
+                        report = request.form.get("report")
+                        sql = "INSERT INTO agent_report (agent_id, content) VALUES (%s, %s)"
+                        cursor.execute(sql, (session['agent_id'],report,))
+                        conn.commit()
+                        flash("Report Submitted","success")
+                        return redirect(url_for("agentDashbord"))
+            except Exception as e:
+                flash('Error: {}'.format(e), 'danger')
+                return redirect(url_for("agentDashbord"))
+        else:
+            return render_template("agent/dailyReport.html")
+    else:
+        flash('Session Expired', 'info')
+        return redirect(url_for("index"))      
 
 
 
