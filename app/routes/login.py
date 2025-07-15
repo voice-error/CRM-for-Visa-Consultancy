@@ -27,7 +27,8 @@ def index():
                     cursor.execute(sql, (username_input,))
                     user = cursor.fetchone()
                     if user == None:
-                        flash('Invalid username or password', 'danger')
+                        flash('Invalid username or password', 'danger')                        
+                        return render_template("login.html")
                     else:
                         if username_input==(user['username']) and password_input==(user['password']):
                             session['user_id'] = user['id']                            

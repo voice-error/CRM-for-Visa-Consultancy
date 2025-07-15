@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Sales</title>
+    <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agentfun.css')}}" />
+    <link rel="stylesheet"
+        href="D:\collage\prabin\bca 4th smi\project 2\Visa client relation management system\app\static\styles\agent\agentfun.css" />
+</head>
+
+<body>
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} " role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}<br>
+    <div class="dashboard-container">
+
+        <div>
+            <h3><a href="{{url_for('agentDashbord')}}">Back</a></h3>
+            <h2>Sales</h2>
+            <form action="/updatesales1" method="POST" id="reportForm">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Client ID</th>
+                            <th>Registration</th>
+                            <th>Documents Processing</th>
+                            <th>Visa Processing</th>
+                            <th>Consulting</th>
+                            <th>Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{client.client_id}}</td>
+                            <td>{{client.registration}}</td>
+                            <td>{{client.doc_process}}</td>
+                            <td>{{client.visa_process}}</td>
+                            <td>{{client.consulting}}</td>
+                            <td>{{client.remaining}}</td>
+                        </tr>
+                    </tbody>
+                </table><br>
+                <label for="paid for" class="form-label">Paid For</label>
+                <select id="paid" name="paid" class="form-select">
+                    {%for paid in unpaid%}
+                        <option value="{{paid}}">{{ paid.replace('_', ' ').title() }}</option>
+                    {%endfor%}
+                </select>
+                <input type="submit" class="btn btn-primary" value="Confirm" >
+            </form>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

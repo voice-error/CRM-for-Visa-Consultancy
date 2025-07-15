@@ -101,6 +101,102 @@ def submitReport():
         flash('Session Expired', 'info')
         return redirect(url_for("index"))      
 
+app.route("/updatesales", methods =["GET", "POST"])
+def updateSales():
+    if 'user_id' in session:
+        if request.method =="POST":
+            try:
+                clientID = (request.form.get("clientID"))
+            except ValueError:
+                flash("Invalid Client ID", "danger")
+                return redirect(url_for("updateSales"))
+            try:
+                with get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        sql = "SELECT * FROM sales WHERE client_id = %s"
+                        cursor.execute(sql, (clientID,))
+                        sales = cursor.fetchone()
+                        if sales == None:
+                            flash('Client  not found', 'danger')
+                            return redirect(url_for("updateSales"))
+                        else:
+                            session['client_id'] = clientID
+                            return redirect(url_for("updateSales1"))
+            except Exception as e:
+                flash('Error1: {}'.format(e), 'danger')
+                return redirect(url_for("agentDashbord"))
+        else: 
+            return render_template("agent/updateSales.html")
+    else:
+        flash('Session Expired', 'info')
+        return redirect(url_for("index"))
+    
+@app.route("/updatesales1", methods=["GET", "POST"])  
+def updateSales1():
+    if 'user_id' in session:
+        if request.method =="POST":
+            client_id = session['client_id']              
+            paid = request.form.get("paid")
+            valid_fields = ['registration', 'doc_process', 'visa_process', 'consulting']
+
+            if paid not in valid_fields:
+                flash("Invalid field", "danger")
+                return redirect(url_for("updateSales1"))
+        
+            try:
+                with get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        sql_get = "SELECT registration, doc_process, visa_process, consulting, remaining FROM sales WHERE client_id = %s"
+                        cursor.execute(sql_get, (client_id,))
+                        result = cursor.fetchone()
+
+                        if result:
+                            # registration, doc_process, visa_process, consulting, remaining = result
+                            if paid == 'registration':
+                                paid_value = result.get('registration')
+                            elif paid == 'doc_process':
+                                paid_value = result.get('doc_process')
+                            elif paid == 'visa_process':
+                                paid_value = result.get('visa_process')
+                            elif paid == 'consulting':
+                                paid_value = result.get('consulting')
+                            remaining_value = result.get('remaining')       
+                            new_remaining = float(remaining_value) - float(paid_value)
+                            sql_update = "UPDATE sales SET {} = 0, remaining = %s WHERE client_id = %s".format(paid)
+                            cursor.execute(sql_update, (new_remaining, client_id))
+                            conn.commit()
+                            flash("Sales Updated", "success")
+                        else:
+                            flash("client not found", "danger")
+                        return redirect(url_for("updateSales"))
+            except Exception as e:
+                flash('Error2: {}'.format(e), 'danger')
+                return redirect(url_for("agentDashbord"))
+        else:
+            client_id = session['client_id']
+            try:
+                with get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        sql = f"SELECT registration,doc_process,visa_process,consulting FROM sales WHERE client_id = {client_id}"
+                        cursor.execute(sql)
+                        sales = cursor.fetchone()
+
+                        sql = "SELECT * FROM sales WHERE client_id = %s"
+                        cursor.execute(sql, (client_id,))
+                        client = cursor.fetchone()
+
+                        unpaid = []
+                        if sales:
+                            columns = ['registration','doc_process','visa_process','consulting']
+                            unpaid = [col for col, val in zip(columns, sales) if val != 0]
+                            return render_template("agent/updateSales1.html", unpaid=unpaid,client = client)
+            except Exception as e:
+                flash('Error3: {}'.format(e), 'danger')
+                return redirect(url_for("agentDashbord"))
+    else:
+        flash('Session Expired', 'info')
+        return redirect(url_for("index"))
+
 
 
 
