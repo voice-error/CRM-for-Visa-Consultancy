@@ -1,84 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client Visa Portal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <title>Client Progress</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='styles/client/client.css')}}" />
 </head>
-<body>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h2 class="card-title text-center mb-4">Check Application Progress</h2>
+<body class="bg-light">
+  <header>
+        <nav class="navbar">
+            <div class="logo"><a class='vc'href="{{url_for('clientDashboard')}}">Visa Consultancy</a></div>
+            <ul class="nav-links">
+                <li><a href="{{url_for('clientChat')}}"> Chat with agent </a></li>
+                <li><a href="{{url_for('clientViewProgress')}}"> View progress</a></li>
+                <li><button id="logoutBtn" class="btn btn-danger">Logout</button></li>
+            </ul>
+        </nav>
+       
+    </header>
 
-            <form id="progress-form">
-              <div class="mb-3">
-                <label for="client-id" class="form-label">Client ID</label>
-                <input type="text" class="form-control" id="client-id" placeholder="Enter Client ID" required />
-              </div>
-              <div class="mb-3">
-                <label for="client-name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="client-name" placeholder="Enter Full Name" required />
-              </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-primary">View Progress</button>
-              </div>
-            </form>
+<div class="container py-5">
+  <div class="card shadow-lg p-4">
+    <h2 class="mb-4">Client Progress</h2>
 
-            <ul id="progress-list" class="list-group mt-4">
-              </ul>
-          </div>
+    <!-- Client Info -->
+    <div class="mb-3">
+      <strong>Client Name:</strong> {{session["first_name"]}} {{session["last_name"]}} <br>
+      <strong>Visa Type:</strong> Student
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-4">
+      <label class="form-label fw-bold">Progress:</label>
+      <div class="progress" style="height: 35px;">
+        <div 
+          id="progress-bar" 
+          class="progress-bar progress-bar-striped progress-bar-animated" 
+          role="progressbar"
+          style="width: 0%"
+        >
+          {{ records.progress }}
         </div>
       </div>
     </div>
+
+    <!-- Status -->
+    <div id="status" class="alert alert-info mt-3">
+      Current Status: <strong>{{ records.progress }}</strong>
+    </div>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('clientDashboard') }}" class="btn btn-secondary">Back</a>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+  // Mapping progress stages to percentages & colors
+  const progress = "{{ records.progress }}";
+  const progressBar = document.getElementById("progress-bar");
+  const statusBox = document.getElementById("status");
 
-  <script>
-    // Simulated application progress data
-    const progressSteps = [
-      { step: "Document Collection", status: "Completed" },
-      { step: "Application Submitted", status: "Completed" },
-      { step: "Under Review", status: "In Progress" },
-      { step: "Visa Decision", status: "Pending" }
-    ];
+  let percentage = 0;
+  let colorClass = "bg-info";
 
-    function getStatusBadge(status) {
-        switch (status) {
-            case "Completed":
-                return '<span class="badge bg-success">Completed</span>';
-            case "In Progress":
-                return '<span class="badge bg-warning text-dark">In Progress</span>';
-            case "Pending":
-                return '<span class="badge bg-secondary">Pending</span>';
-            default:
-                return `<span class="badge bg-light text-dark">${status}</span>`;
-        }
-    }
+  switch (progress) {
+    case "verifying documents":
+      percentage = 25;
+      colorClass = "bg-warning";
+      break;
+    case "in progress":
+      percentage = 50;
+      colorClass = "bg-primary";
+      break;
+    case "completed":
+      percentage = 100;
+      colorClass = "bg-success";
+      break;
+    case "rejected":
+      percentage = 100;
+      colorClass = "bg-danger";
+      break;
+  }
 
-    function loadProgress() {
-      const progressList = document.getElementById("progress-list");
-      progressList.innerHTML = ''; // Clear previous results
+  progressBar.style.width = percentage + "%";
+  progressBar.classList.add(colorClass);
 
-      progressSteps.forEach(item => {
-        const li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
-        li.innerHTML = `
-          ${item.step}
-          ${getStatusBadge(item.status)}
-        `;
-        progressList.appendChild(li);
-      });
-    }
+  
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    confirm("Go to home page for loging out!")
+  });
+  
+</script>
 
-    document.getElementById('progress-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        loadProgress();
-    });
-  </script>
 </body>
 </html>

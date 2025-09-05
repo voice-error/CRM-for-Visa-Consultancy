@@ -6,7 +6,7 @@ app = Flask(__name__, template_folder='app/templates', static_folder='app/static
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 app.route("/agent", methods =["GET", "POST"])
-def agentDashbord():
+def agentDashboard():
         if 'user_id' in session:          
             return render_template("agent/agent.html")
         else:
@@ -31,7 +31,7 @@ def viewClients():
                     return render_template("agent/viewClients.html", clients = clients)
         except Exception as e:
             flash('Error: {}'.format(e), 'danger')
-            return redirect(url_for("agentDashbord"))
+            return redirect(url_for("agentDashboard"))
     else:
         flash('Session Expired', 'info')
         return redirect(url_for("index"))
@@ -54,7 +54,7 @@ def updateProgress(client_id):
                         client = cursor.fetchone()                    
         except Exception as e:
             flash('Error: {}'.format(e), 'danger')
-            return redirect(url_for("agentDashbord"))
+            return redirect(url_for("agentDashboard"))
         
         if request.method =="POST":
             progress = request.form.get("progress")
@@ -69,7 +69,7 @@ def updateProgress(client_id):
                             return render_template("agent/updateProgress.html", client = client)
                 except Exception as e:
                     flash('Error: {}'.format(e), 'danger')
-                    return redirect(url_for("agentDashbord"))
+                    return redirect(url_for("agentDashboard"))
             else:
                 flash("Invalid Progress","danger")
                 return redirect(url_for("updateProgress"))        
@@ -91,10 +91,10 @@ def submitReport():
                         cursor.execute(sql, (session['agent_id'],report,))
                         conn.commit()
                         flash("Report Submitted","success")
-                        return redirect(url_for("agentDashbord"))
+                        return redirect(url_for("agentDashboard"))
             except Exception as e:
                 flash('Error: {}'.format(e), 'danger')
-                return redirect(url_for("agentDashbord"))
+                return redirect(url_for("agentDashboard"))
         else:
             return render_template("agent/dailyReport.html")
     else:
@@ -105,11 +105,7 @@ app.route("/updatesales", methods =["GET", "POST"])
 def updateSales():
     if 'user_id' in session:
         if request.method =="POST":
-            try:
-                clientID = (request.form.get("clientID"))
-            except ValueError:
-                flash("Invalid Client ID", "danger")
-                return redirect(url_for("updateSales"))
+            clientID = (request.form.get("clientID"))
             try:
                 with get_connection() as conn:
                     with conn.cursor() as cursor:
@@ -124,7 +120,7 @@ def updateSales():
                             return redirect(url_for("updateSales1"))
             except Exception as e:
                 flash('Error1: {}'.format(e), 'danger')
-                return redirect(url_for("agentDashbord"))
+                return redirect(url_for("agentDashboard"))
         else: 
             return render_template("agent/updateSales.html")
     else:
@@ -171,7 +167,7 @@ def updateSales1():
                         return redirect(url_for("updateSales"))
             except Exception as e:
                 flash('Error2: {}'.format(e), 'danger')
-                return redirect(url_for("agentDashbord"))
+                return redirect(url_for("agentDashboard"))
         else:
             client_id = session['client_id']
             try:
@@ -188,11 +184,13 @@ def updateSales1():
                         unpaid = []
                         if sales:
                             columns = ['registration','doc_process','visa_process','consulting']
-                            unpaid = [col for col, val in zip(columns, sales) if val != 0]
+                            unpaid = [col for col in columns if sales[col] != 0]
+                            print("Unpaid list:", unpaid)
+                            print("Client info:", client)
                             return render_template("agent/updateSales1.html", unpaid=unpaid,client = client)
             except Exception as e:
                 flash('Error3: {}'.format(e), 'danger')
-                return redirect(url_for("agentDashbord"))
+                return redirect(url_for("agentDashboard"))
     else:
         flash('Session Expired', 'info')
         return redirect(url_for("index"))

@@ -9,7 +9,7 @@
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/agent/dailyReport.css') }}">
-    <link rel="stylesheet" href="D:\collage\prabin\bca 4th smi\project 2\Visa client relation management system\app\static\styles\agent\dailyReport.css">
+    
 </head>
 <body>
      <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
@@ -25,7 +25,7 @@
     {% endwith %}<br>
 
     <div class="report-card">
-        <h3><a href="{{url_for('agentDashbord')}}">Back</a></h3>
+        <h3><a href="{{url_for('agentDashboard')}}">Back</a></h3>
         <h2>Daily Report</h2>
         <form action="/report" method="POST" id="reportForm">
             <div class="mb-3">
@@ -142,6 +142,7 @@ CHECK YOUR REPORT THEN DELETE THIS LINE BEFORE CLICKING SUBMIT
             </div>
         </form>
     </div>
+
 
 </body>
 </html>

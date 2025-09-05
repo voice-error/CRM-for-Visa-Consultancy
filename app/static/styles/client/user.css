@@ -67,3 +67,7 @@ form{
     flex-direction: column;
     align-items: center;
 }
+.vc {
+  text-decoration: none;
+  color: inherit;
+}

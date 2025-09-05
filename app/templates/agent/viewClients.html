@@ -6,9 +6,20 @@
     <title>View clients</title>
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agentfun.css')}}" />
-    <link rel="stylesheet" href="D:\collage\prabin\bca 4th smi\project 2\Visa client relation management system\app\static\styles\agent\agentfun.css" />
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agent.css')}}" />
 </head>
 <body>
+  <header>
+        <nav class="navbar">
+            <div class="logo"><a class='vc'href="{{url_for('agentDashboard')}}">Visa Consultancy</a></div>
+            <ul class="nav-links">
+                <li><a href="{{url_for('viewClients')}}">View Clients</a></li>
+                <li><a href="{{url_for('submitReport')}}">Submit Daily reports</a></li>
+                <li><a href="{{url_for('updateSales')}}">Update Sales</a></li>
+                <li><button id="logoutBtn" class="btn btn-danger">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
     <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -54,6 +65,10 @@
             </table>
         </div>
     </div>
-    
+  <script>
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            alert("Go to home page for loging out!")
+            });
+    </script>  
 </body>
 </html>
