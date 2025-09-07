@@ -7,13 +7,24 @@
   <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
 </head>
 <body class="bg-light">
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} " role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}<br>
   <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="card shadow p-4 rounded-4" style="max-width: 400px; width: 100%;">
       <h3 class="text-center mb-4">Reset Password</h3>
-      <form>
+      <form method="POST" action="/forgotpass">
         <div class="mb-3">
           <label for="email" class="form-label">Email or Username</label>
-          <input type="text" class="form-control" id="email" placeholder="Enter your email or username" required>
+          <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email or username" required>
         </div>
         <button type="submit" class="btn btn-primary w-100">Send Code</button>
       </form>

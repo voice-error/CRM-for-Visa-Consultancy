@@ -5,7 +5,7 @@ from app.backend.connection import get_connection
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
-app.route("/agent", methods =["GET", "POST"])
+@app.route("/agent", methods =["GET", "POST"])
 def agentDashboard():
         if 'user_id' in session:          
             return render_template("agent/agent.html")
@@ -13,7 +13,7 @@ def agentDashboard():
             flash('Session Expired', 'info')
             return redirect(url_for("index"))
 
-app.route("/viewclients", methods =["GET", "POST"])
+@app.route("/viewclients", methods =["GET", "POST"])
 def viewClients():
     if 'user_id' in session:
         try:
@@ -30,13 +30,13 @@ def viewClients():
                     clients = cursor.fetchall()
                     return render_template("agent/viewClients.html", clients = clients)
         except Exception as e:
-            flash('Error: {}'.format(e), 'danger')
+            flash("'Error: {}'.format(e)", 'danger')
             return redirect(url_for("agentDashboard"))
     else:
         flash('Session Expired', 'info')
         return redirect(url_for("index"))
 
-app.route("/updateprogress/<int:client_id>", methods =["GET", "POST"])
+@app.route("/updateprogress/<int:client_id>", methods =["GET", "POST"])
 def updateProgress(client_id):
     if 'user_id' in session:
         # getting the client info
@@ -79,7 +79,7 @@ def updateProgress(client_id):
         flash('Session Expired', 'info')
         return redirect(url_for("index"))
 
-app.route("/report", methods =["GET", "POST"])
+@app.route("/report", methods =["GET", "POST"])
 def submitReport():
     if 'user_id' in session:
         if request.method =="POST":
@@ -101,7 +101,7 @@ def submitReport():
         flash('Session Expired', 'info')
         return redirect(url_for("index"))      
 
-app.route("/updatesales", methods =["GET", "POST"])
+@app.route("/updatesales", methods =["GET", "POST"])
 def updateSales():
     if 'user_id' in session:
         if request.method =="POST":

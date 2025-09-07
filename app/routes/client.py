@@ -5,7 +5,7 @@ from app.backend.connection import get_connection
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 
-app.route("/client", methods =["GET", "POST"])
+@app.route("/client", methods =["GET", "POST"])
 def clientDashboard():
         if 'user_id' in session:
             return render_template("client/client.html")
@@ -14,7 +14,7 @@ def clientDashboard():
             return redirect(url_for("index"))
 
 
-app.route("/clientChat", methods =["GET", "POST"])
+@app.route("/clientChat", methods =["GET", "POST"])
 def clientChat():
         if 'user_id' in session:
             return render_template("client/chatwithagent.html")
@@ -22,7 +22,7 @@ def clientChat():
             flash(f'Session for {session["first_name"]} has expired', 'info')
             return redirect(url_for("index"))
         
-app.route("/clientviewprogress", methods =["GET", "POST"])
+@app.route("/clientviewprogress", methods =["GET", "POST"])
 def clientViewProgress():        
     if 'user_id' not in session:
         flash('Session Expired', 'info')
@@ -36,7 +36,7 @@ def clientViewProgress():
             records = cursor.fetchone()
             return render_template('client/checkprogress.html', records=records)
 
-app.route("/user", methods =["GET", "POST"])
+@app.route("/user", methods =["GET", "POST"])
 def userDashboard():
         if 'user_id' in session:
             return render_template("client/user.html")
