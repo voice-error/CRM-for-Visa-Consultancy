@@ -10,7 +10,7 @@ def clientDashboard():
         if 'user_id' in session:
             return render_template("client/client.html")
         else:
-            flash('Session Expired', 'info')
+            flash('Valid user not found', 'info')
             return redirect(url_for("index"))
 
 
@@ -25,7 +25,7 @@ def clientChat():
 @app.route("/clientviewprogress", methods =["GET", "POST"])
 def clientViewProgress():        
     if 'user_id' not in session:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return render_template("login.html")
 
     client_id = session['client_id']
@@ -41,7 +41,7 @@ def userDashboard():
         if 'user_id' in session:
             return render_template("client/user.html")
         else:
-            flash('Session Expired', 'info')
+            flash('Valid user not found', 'info')
             return redirect(url_for("index"))
         
 

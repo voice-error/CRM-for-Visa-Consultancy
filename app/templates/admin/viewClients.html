@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Info</title>
+    <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/admin/admin.css')}}" />
+</head>
+
+<body class="bg-light">
+    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+    <header>
+        <nav class="navbar">
+            <div class="logo"><a class='vc'href="{{url_for('adminDashboard')}}">Visa Consultancy</a></div>
+            <ul class="nav-links">
+                <li><a href="{{url_for('checkRegistrations')}}">Check Registration</a></li>
+                <li><a href="{{url_for('lookClients')}}">View Client</a></li>
+                <li><a href="{{url_for('lookAgents')}}">View Agent</a></li>
+                <li><button id="logoutBtn" class="btn btn-danger">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} " role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}<br>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                {%for data in data%}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <p><strong>ID:</strong> {{data.user_id}}</p>
+                        <p><strong>Email:</strong> {{data.username}}</p>
+                        <p><strong>Name:</strong> {{data.first_name}} {{data.last_name}}</p>
+                        <p><strong>Country:</strong> {{data.country}}</p>
+                        <p><strong>University:</strong> {{data.university}}</p>
+                        <p><strong>Program:</strong> {{data.program}}</p>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Progress:</label>
+                            <div class="progress" style="height: 35px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated user-progress"
+                                    role="progressbar" data-progress="{{ data.progress }}" style="width: 0%">
+                                    {{ data.progress }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll(".user-progress").forEach(function (bar) {
+            const progress = bar.dataset.progress;
+            let percentage = 0;
+            let colorClass = "bg-info";
+
+            switch (progress) {
+                case "verifying documents":
+                    percentage = 25;
+                    colorClass = "bg-warning";
+                    break;
+                case "in progress":
+                    percentage = 50;
+                    colorClass = "bg-primary";
+                    break;
+                case "completed":
+                    percentage = 100;
+                    colorClass = "bg-success";
+                    break;
+                case "rejected":
+                    percentage = 100;
+                    colorClass = "bg-danger";
+                    break;
+            }
+
+            bar.style.width = percentage + "%";
+            bar.classList.add(colorClass);
+        });
+
+        
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            alert("Go to home page for loging out!")
+            }); 
+    </script>
+</body>
+
+</html>

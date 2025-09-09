@@ -7,15 +7,15 @@ app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 @app.route("/agent", methods =["GET", "POST"])
 def agentDashboard():
-        if 'user_id' in session:          
+        if 'agent_id' in session:          
             return render_template("agent/agent.html")
         else:
-            flash('Session Expired', 'info')
+            flash('Valid user not found', 'info')
             return redirect(url_for("index"))
 
 @app.route("/viewclients", methods =["GET", "POST"])
 def viewClients():
-    if 'user_id' in session:
+    if 'agent_id' in session:
         try:
             with get_connection() as conn:
                 with conn.cursor() as cursor:
@@ -33,12 +33,12 @@ def viewClients():
             flash("'Error: {}'.format(e)", 'danger')
             return redirect(url_for("agentDashboard"))
     else:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return redirect(url_for("index"))
 
 @app.route("/updateprogress/<int:client_id>", methods =["GET", "POST"])
 def updateProgress(client_id):
-    if 'user_id' in session:
+    if 'agent_id' in session:
         # getting the client info
         try:                
                 with get_connection() as conn:
@@ -76,12 +76,12 @@ def updateProgress(client_id):
         else:
             return render_template("agent/updateProgress.html", client = client)
     else:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return redirect(url_for("index"))
 
 @app.route("/report", methods =["GET", "POST"])
 def submitReport():
-    if 'user_id' in session:
+    if 'agent_id' in session:
         if request.method =="POST":
             try:
                 with get_connection() as conn:
@@ -98,12 +98,12 @@ def submitReport():
         else:
             return render_template("agent/dailyReport.html")
     else:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return redirect(url_for("index"))      
 
 @app.route("/updatesales", methods =["GET", "POST"])
 def updateSales():
-    if 'user_id' in session:
+    if 'agent_id' in session:
         if request.method =="POST":
             clientID = (request.form.get("clientID"))
             try:
@@ -124,12 +124,12 @@ def updateSales():
         else: 
             return render_template("agent/updateSales.html")
     else:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return redirect(url_for("index"))
     
 @app.route("/updatesales1", methods=["GET", "POST"])  
 def updateSales1():
-    if 'user_id' in session:
+    if 'agent_id' in session:
         if request.method =="POST":
             client_id = session['client_id']              
             paid = request.form.get("paid")
@@ -192,7 +192,7 @@ def updateSales1():
                 flash('Error3: {}'.format(e), 'danger')
                 return redirect(url_for("agentDashboard"))
     else:
-        flash('Session Expired', 'info')
+        flash('Valid user not found', 'info')
         return redirect(url_for("index"))
 
 

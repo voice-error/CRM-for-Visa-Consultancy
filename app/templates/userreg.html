@@ -22,24 +22,15 @@
     <div class="login-container">
         <h2>Sign-up</h2>
 
-        <form method="POST" action="/userreg">
-
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" class="form-control" name="first_name" required>
-            
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" class="form-control" name="last_name" required>
-
-            <label for="username">User Name</label>
-            <input type="email" id="username" class="form-control" name="username" placeholder="example@ex.com" required>
-            
-            <label for="phone">Contact Number</label>
-            <input type="tel" id="phone" class="form-control" name="phone" placeholder="000000000" required>
-
-            <label for="password">Password</label>
-            <input type="password" id="password" class="form-control" name="password" placeholder="1@$%&*&FFd3" required>
-
-            <button type="submit">Sign-up</button>
+        <form method="POST" action="/usertype">
+            <label for="User_type">User type</label>
+            <select id="user_type" class="form-select" name="user_type" required>
+                <option value="" selected disabled>-- Account Type --</option>
+                <option value="agent">Workers account</option>
+                <option value="client">Applicant account</option>
+              </select>
+              <br>
+            <button type="submit" class="btn btn-success">Next</button>
         </form>
     </div>  
 </body>

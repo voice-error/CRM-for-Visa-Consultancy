@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View clients</title>
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agentfun.css')}}" />
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/agent/agent.css')}}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/admin/admin.css')}}" />
 </head>
 <body>
-  <header>
+   <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+   <header>
         <nav class="navbar">
-            <div class="logo"><a class='vc'href="{{url_for('agentDashboard')}}">Visa Consultancy</a></div>
+            <div class="logo"><a class='vc'href="{{url_for('adminDashboard')}}">Visa Consultancy</a></div>
             <ul class="nav-links">
-                <li><a href="{{url_for('viewClients')}}">View Clients</a></li>
-                <li><a href="{{url_for('submitReport')}}">Submit Daily reports</a></li>
-                <li><a href="{{url_for('updateSales')}}">Update Sales</a></li>
+                <li><a href="{{url_for('checkRegistrations')}}">Check Registration</a></li>
+                <li><a href="{{url_for('lookClients')}}">View Client</a></li>
+                <li><a href="{{url_for('lookAgents')}}">View Agent</a></li>
                 <li><button id="logoutBtn" class="btn btn-danger">Logout</button></li>
             </ul>
         </nav>
     </header>
-    <script src="{{url_for('static',filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -33,31 +32,23 @@
     {% endwith %}<br>
     <div class="dashboard-container">
         <div>
-            <h3><a href="/agent">Back</a></h3>
-            <h2>Assigned Clients</h2>
+            <h3><a href="/admin">Back</a></h3>
+            <h2>VISA APPLICANTS</h2>
             <table>
               <thead>
                 <tr>
-                  <th>Client ID</th>
-                  <th>Full Name</th>
-                  <th>Visa Type</th>
-                  <th>Progress</th>
-                  <th>Apply Date</th>
+                  <th>User ID</th>
+                  <th>Email</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {% for i in clients %}
+                {% for i in users %}
                 <tr>
-                  <td>{{ i.client_id }}</td>
-                  <td>{{ i.first_name }} {{ i.last_name }}</td>
-                  <td>Student</td>
-                  <td>{{ i.progress }}</td>
-                  <td>{{ i.apply_date }}</td>
+                  <td>{{ i.id }}</td>
+                  <td>{{ i.username }}</td>
                   <td>
-                    <a href="{{url_for('updateProgress',client_id=i.client_id)}}" class="btn0">Update Progress</a>
-                    <p></p>
-                    <a href="#" class="btn0">Send message</a>
+                    <a href="{{url_for('reviewApplication',user_id=i.id)}}" class="btn0">Review</a>
                   </td>
                 </tr>
                 {% endfor %}    

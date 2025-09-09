@@ -63,12 +63,13 @@ th {
       padding: 8px;
       margin-right: 10px;
     }
-.btn {
+.btn0 {
       padding: 8px 16px;
       background-color: #3498db;
       color: white;
       border: none;
       cursor: pointer;
+      text-decoration: none;
     }
 .btn:hover {
       background-color: #2980b9;

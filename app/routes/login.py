@@ -35,8 +35,16 @@ def index():
                             session['user_id'] = user['id']                            
                             role = user['role_id']
                             if role == 3:
-                                flash('Welcome  Admin', 'success')
-                                return render_template("admin/admin.html")
+                                sql = "SELECT * FROM owner WHERE user_id = %s"
+                                cursor.execute(sql, (user['id'],))
+                                user = cursor.fetchone()
+                                session['first_name'] = user['first_name']
+                                session['last_name'] = user['last_name']
+                                session['admin_id'] = user['id']
+                                session['dashboard']="adminDashboard"
+                                
+                                flash(f'Welcome {session["first_name"]}', 'success')
+                                return redirect(url_for("adminDashboard"))
                             elif role == 2:
                                 sql = "SELECT * FROM agent WHERE user_id = %s"
                                 cursor.execute(sql, (user['id'],))
@@ -52,16 +60,38 @@ def index():
                                 sql = "SELECT * FROM unverified WHERE user_id = %s"
                                 cursor.execute(sql, (user['id'],))
                                 unver_user = cursor.fetchone()
-
+                                sql = "SELECT * FROM unverified_agent WHERE user_id = %s"
+                                cursor.execute(sql, (user['id'],))
+                                unver_agent = cursor.fetchone()
                                 if unver_user:
-                                    session['first_name'] = unver_user['first_name']
-                                    session['last_name'] = unver_user['last_name']
-                                    session['dashboard'] = "userDashboard"
-                                    flash(f'Welcome {session["first_name"]}', 'success')
-                                    return redirect(url_for("userDashboard"))
+                                    if unver_user['status'] == 1:
+                                        session['first_name'] = unver_user['first_name']
+                                        session['last_name'] = unver_user['last_name']
+                                        session['dashboard'] = "userDashboard"
+                                        flash(f'Welcome {session["first_name"]}', 'success')
+                                        return redirect(url_for("userDashboard"))
+                                    else:
+                                        session['first_name'] = unver_user['first_name']
+                                        session['last_name'] = unver_user['last_name']
+                                        session['dashboard'] = "rejectedDashboard"
+                                        flash(f'{session["first_name"]} your application has been rejected', 'info')
+                                        return redirect(url_for("rejectedDashboard"))
+                                elif unver_agent:
+                                    if unver_agent['status'] == 1:
+                                        session['first_name'] = unver_agent['first_name']
+                                        session['last_name'] = unver_agent['last_name']
+                                        session['dashboard'] = "userDashboard"
+                                        flash(f'Welcome {session["first_name"]}', 'success')
+                                        return redirect(url_for("userDashboard"))
+                                    else:
+                                        session['first_name'] = unver_agent['first_name']
+                                        session['last_name'] = unver_agent['last_name']
+                                        session['dashboard'] = "rejectedAgentDashboard"
+                                        flash(f'{session["first_name"]} your application has been rejected', 'info')
+                                        return redirect(url_for("rejectedAgentDashboard"))    
                                 else:
                                     flash("Unverified user not found.", "danger")
-                                    return render_template("login.html")                            
+                                    return redirect(url_for("index"))                            
                             elif role == 1:
                                 sql = "SELECT * FROM client WHERE user_id = %s"
                                 cursor.execute(sql, (user['id'],))
@@ -82,6 +112,7 @@ def index():
             flash('Error: {}'.format(e), 'danger')
     return render_template("login.html")
     
+
 
 @app.route("/logout")
 def logout():
