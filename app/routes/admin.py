@@ -233,14 +233,12 @@ def lookAgents(agent_id=None):
         with get_connection() as conn:
             with conn.cursor() as cursor:
                 if agent_id is None:
-                    # Show all agents
                     sql = "SELECT * FROM agent"
                     cursor.execute(sql)
                     agents = cursor.fetchall()
                     print(agents)
                     return render_template("admin/viewAgent.html", data=agents)
                 else:
-                    # Show reports for a specific agent (latest → oldest)
                     sql = """
                         SELECT ar.agent_id, a.first_name, a.last_name, a.phone, ar.content, ar.date
                         FROM agent_report ar

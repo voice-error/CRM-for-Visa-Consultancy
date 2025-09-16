@@ -11,7 +11,7 @@
         <nav class="navbar">
             <div class="logo"><a class='vc'href="{{url_for('clientDashboard')}}">Visa Consultancy</a></div>
             <ul class="nav-links">
-                <li><a href="{{url_for('clientChat')}}"> Chat with agent </a></li>
+                <li><a href="{{url_for('get_or_create_code')}}"> Chat with agent </a></li>
                 <li><a href="{{url_for('clientViewProgress')}}"> View progress</a></li>
                 <li><button id="logoutBtn" class="btn btn-danger">Logout</button></li>
             </ul>
@@ -23,13 +23,13 @@
   <div class="card shadow-lg p-4">
     <h2 class="mb-4">Client Progress</h2>
 
-    <!-- Client Info -->
+ 
     <div class="mb-3">
       <strong>Client Name:</strong> {{session["first_name"]}} {{session["last_name"]}} <br>
       <strong>Visa Type:</strong> Student
     </div>
 
-    <!-- Progress Bar -->
+
     <div class="mb-4">
       <label class="form-label fw-bold">Progress:</label>
       <div class="progress" style="height: 35px;">
@@ -44,18 +44,18 @@
       </div>
     </div>
 
-    <!-- Status -->
+
     <div id="status" class="alert alert-info mt-3">
       Current Status: <strong>{{ records.progress }}</strong>
     </div>
 
-    <!-- Back Button -->
+
     <a href="{{ url_for('clientDashboard') }}" class="btn btn-secondary">Back</a>
   </div>
 </div>
 
 <script>
-  // Mapping progress stages to percentages & colors
+  // progress bar ko percentages ra colors ko relationship  
   const progress = "{{ records.progress }}";
   const progressBar = document.getElementById("progress-bar");
   const statusBox = document.getElementById("status");

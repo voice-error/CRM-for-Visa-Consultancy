@@ -1,8 +1,11 @@
 from flask import Flask
-from app.routes import login,userreg,client,agent,forgotpass,admin
+from app.routes import login, userreg, client, agent, forgotpass, admin
+from app.routes.chat import init_chat_routes
 import os
 from flask_mail import Mail
 from dotenv import load_dotenv
+from flask_socketio import SocketIO # Import SocketIO
+
 load_dotenv(dotenv_path=os.path.join("crmEnv", ".env"))
 app = Flask(__name__, template_folder="app/templates", static_folder="app/static")
 import secrets
@@ -17,13 +20,13 @@ app.config["MAIL_PASSWORD"] = os.getenv("sender_pass")
 app.config["MAIL_DEFAULT_SENDER"] = os.getenv("sender_email")
 
 mail = Mail(app)
-
+socketio = SocketIO(app)
 
 
 print("TEMPLATE DIR:", os.path.abspath("app/templates"))
 print("Files in template dir:", os.listdir("app/templates"))
 
-# # Register routes defined in other files
+#Routes defined in other files
 app.add_url_rule("/", view_func=login.index, methods=["GET", "POST"])
 app.add_url_rule("/login", view_func=login.index, methods=["GET", "POST"])
 app.add_url_rule("/logout", view_func=login.logout, methods=["GET", "POST"])
@@ -56,9 +59,9 @@ app.add_url_rule("/lookClients", view_func=admin.lookClients, methods=["GET", "P
 app.add_url_rule("/lookAgents", view_func=admin.lookAgents, methods=["GET", "POST"])
 app.add_url_rule("/lookAgents/<int:agent_id>", view_func=admin.lookAgents, methods=["GET", "POST"])
 
-
+init_chat_routes(app, socketio)
 
 # app.add_url_rule("/testmail", view_func=forgotpass.test_mail, methods=["GET", "POST"])
 
 if (__name__) == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)

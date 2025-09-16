@@ -74,7 +74,7 @@
               </select>
             </div>
 
-            <!-- Select 2 -->
+            
             <div class="col-12">
               <label for="level2" class="form-label">University</label>
               <select id="university" class="form-select" name="university" disabled required>
@@ -82,7 +82,7 @@
               </select>
             </div>
 
-            <!-- Select 3 -->
+            
             <div class="col-12">
               <label for="level3" class="form-label">Program</label>
               <select id="program" class="form-select" name="program" disabled required>
@@ -121,7 +121,7 @@
   </div>
   <script>
     (function () {
-      // Level 1 -> Level 2 map
+      
       const level2Map = {
         1: [
           { value: '1', text: 'The University of Melbourne' },
@@ -137,7 +137,7 @@
         ]
       };
 
-      // Level 2 -> Level 3 map
+      
       const level3Map = {
         1: [
           { value: '1', text: 'Bachelor of Computer Applications' },
@@ -198,13 +198,13 @@
         select.disabled = false;
       }
 
-      // Level 1 change → update Level 2
+      
       country.addEventListener('change', (e) => {
         populateSelect(university, level2Map[e.target.value], '-- Choose category first --');
-        populateSelect(program, [], '-- Choose sub-category first --'); // reset level 3
+        populateSelect(program, [], '-- Choose sub-category first --'); 
       });
 
-      // Level 2 change → update Level 3
+      
       university.addEventListener('change', (e) => {
         populateSelect(program, level3Map[e.target.value], '-- Choose sub-category first --');
       });

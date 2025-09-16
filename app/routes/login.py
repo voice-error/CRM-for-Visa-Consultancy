@@ -32,7 +32,8 @@ def index():
                         return render_template("login.html")
                     else:
                         if username_input==(user['username']) and password_input==(user['password']):
-                            session['user_id'] = user['id']                            
+                            session['user_id'] = user['id']
+                            session['role_id'] = user['role_id']                            
                             role = user['role_id']
                             if role == 3:
                                 sql = "SELECT * FROM owner WHERE user_id = %s"

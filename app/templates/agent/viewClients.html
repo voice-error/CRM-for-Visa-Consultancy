@@ -57,7 +57,7 @@
                   <td>
                     <a href="{{url_for('updateProgress',client_id=i.client_id)}}" class="btn0">Update Progress</a>
                     <p></p>
-                    <a href="#" class="btn0">Send message</a>
+                    <a href="{{url_for('get_create_code',client_id=i.client_id)}}" class="btn0">Send message</a>
                   </td>
                 </tr>
                 {% endfor %}    

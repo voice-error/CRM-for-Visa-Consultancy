@@ -39,7 +39,6 @@ def viewClients():
 @app.route("/updateprogress/<int:client_id>", methods =["GET", "POST"])
 def updateProgress(client_id):
     if 'agent_id' in session:
-        # getting the client info
         try:                
                 with get_connection() as conn:
                     with conn.cursor() as cursor:
