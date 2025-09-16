@@ -13,3 +13,6 @@ How to run:
     sender_email="your google mail"
     sender_pass="16 digit app pass generated from google 'app password',without spaces!!!"
 9) Click on the run.py file and run it.
+
+
+!!!NOtice this code repo contains some amount of AI assisted code.
