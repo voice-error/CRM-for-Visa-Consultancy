@@ -65,69 +65,82 @@
     xintegrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    // Pass both user ID and full name from the server session to JavaScript
+    const currentUserID = "{{ session.user_id }}";
+    const currentUserName = "{{ session.get('first_name', '') }} {{ session.get('last_name', '') }}".trim();
+    
+    const socket = io();
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const chatBox = document.getElementById("chat-box");
 
-      const currentUserID = "{{ session.user_id }}";
-      const socket = io();
+    function addMessageToBox(data) {
+      const messageDiv = document.createElement("div");
+      
+      // Determine if the message is from the current user or someone else
+      const messageClass = String(data.sender_id) === String(currentUserID) 
+        ? 'user-message' 
+        : 'agent-message';
 
-      const chatForm = document.getElementById("chat-form");
-      const chatInput = document.getElementById("chat-input");
-      const chatBox = document.getElementById("chat-box");
-
-      /**
-       * The single function to add any message to the chat box.
-       * @param {object} data - The message data from the server.
-       * @param {string} data.sender_name - The name of the sender.
-       * @param {string} data.message - The chat message.
-       * @param {string} data.sender_id - The ID of the sender.
-       */
-      function addMessageToBox(data) {
-        const messageDiv = document.createElement("div");
-
-        const messageClass = String(data.sender_id) === String(currentUserID)
-          ? 'user-message'
-          : 'agent-message';
-
-        messageDiv.className = `chat-message ${messageClass}`;
-
-        const strong = document.createElement("strong");
-        strong.textContent = `${data.sender_name}: `;
-        messageDiv.appendChild(strong);
-        messageDiv.appendChild(document.createTextNode(data.message));
-
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight; 
-      }
-
-      socket.on('connect', () => {
-        console.log("Connected to server. Joining room...");
-        socket.emit("join");
-      });
-
-      socket.on("status", data => {
-        console.log("Status update:", data.msg);
-      });
-
-      socket.on("receive_message", data => {
-        addMessageToBox(data);
-      });
-
-      chatForm.addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent the form from reloading the page
-        const message = chatInput.value.trim();
-
-        if (message) {
-          socket.emit("send_message", { message: message });
-          chatInput.value = ""; // Clear the input
-        }
-      });
-
+      messageDiv.className = `chat-message ${messageClass}`;
+      
+      const strong = document.createElement("strong");
+      // Use sender_name which is consistent for both historical and real-time messages
+      strong.textContent = `${data.sender_name}: `; 
+      messageDiv.appendChild(strong);
+      messageDiv.appendChild(document.createTextNode(data.message));
+      
+      chatBox.appendChild(messageDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    socket.on('connect', () => {
+      console.log("Connected to server. Joining room...");
+      socket.emit("join");
     });
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-      confirm("Go to home page for loging out!")
+
+    socket.on("status", data => {
+      console.log("Status update:", data.msg);
     });
-  </script>
+
+    // This listener now only handles messages from OTHER users
+    socket.on("receive_message", data => {
+      addMessageToBox(data);
+    });
+    
+    // --- THIS IS THE MAJORLY CHANGED PART ---
+    chatForm.addEventListener('submit', function (e) {
+      e.preventDefault(); 
+      const message = chatInput.value.trim();
+
+      if (message) {
+        // 1. Create the message data object for immediate display
+        const selfMessageData = {
+          sender_id: currentUserID,
+          sender_name: currentUserName,
+          message: message
+        };
+
+        // 2. Add your own message to your chat box immediately
+        addMessageToBox(selfMessageData);
+
+        // 3. Send the message to the server for it to broadcast to others
+        socket.emit("send_message", { message: message });
+        
+        // 4. Clear the input field
+        chatInput.value = ""; 
+      }
+    });
+
+    // Scroll to the bottom on initial page load
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    confirm("Go to home page for loging out!")
+  });
+</script>
 </body>
 
 </html>

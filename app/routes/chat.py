@@ -185,24 +185,24 @@ def init_chat_routes(app, socketio):
     @socketio.on("send_message")
     def handle_message(data):
         user_id = session.get("user_id")
-        first_name = session.get("first_name", "") # Use a default value
-        last_name = session.get("last_name", "")   # Use a default value
+        first_name = session.get("first_name", "")
+        last_name = session.get("last_name", "")
         room_id = session.get("room_id")
         message = data["message"]
-    
+
         if not all([user_id, room_id, message]):
-            # Don't process empty or invalid messages
             return
-    
-        # Save the message to the database
+
+        # Save the message to the database (this part is unchanged)
         save_message(room_id, user_id, message)
-    
-        # Prepare a complete payload for the client
+
         payload = {
             "sender_id": user_id,
             "sender_name": f"{first_name} {last_name}".strip(),
             "message": message,
         }
-    
-        # Broadcast the message to everyone in the room (including the sender)
-        emit("receive_message", payload, room=str(room_id))
+
+        # --- THIS IS THE CORRECTED LINE ---
+        # Broadcast the message to everyone in the room EXCEPT the sender.
+        # `request.sid` is the unique session ID of the client who sent the message.
+        emit("receive_message", payload, room=str(room_id), skip_sid=request.sid)

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 16, 2025 at 09:03 AM
+-- Generation Time: Oct 15, 2025 at 10:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_crm`
 --
+CREATE DATABASE IF NOT EXISTS `db_crm` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `db_crm`;
 
 -- --------------------------------------------------------
 
@@ -78,6 +80,14 @@ CREATE TABLE `chat_message` (
   `is_read` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `chat_message`
+--
+
+INSERT INTO `chat_message` (`id`, `room_id`, `sender_id`, `message`, `sent_on`, `is_read`) VALUES
+(35, 'FT9PS', 16, 'mero kina rejict vayeo', '2025-10-03 12:54:18', 0),
+(36, 'FT9PS', 17, 'checkint wait bro', '2025-10-03 12:54:55', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -90,6 +100,13 @@ CREATE TABLE `chat_room` (
   `client_id` bigint(10) NOT NULL,
   `created_on` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `chat_room`
+--
+
+INSERT INTO `chat_room` (`id`, `agent_id`, `client_id`, `created_on`) VALUES
+('FT9PS', 1, 7, '2025-09-16 13:03:24');
 
 -- --------------------------------------------------------
 
@@ -322,7 +339,8 @@ CREATE TABLE `unverified` (
 --
 
 INSERT INTO `unverified` (`uv_id`, `user_id`, `first_name`, `last_name`, `email`, `phone`, `visa_type`, `country_id`, `university_id`, `program_id`, `notes`, `status`) VALUES
-(4, 29, 'ankit', 'ghimire', 'twoingammer@gmail.com', 9812698296, 'Student', 1, 1, 1, 'Please i am poor help me!!!!!!!!!!!!!!!!!!!!!!!!!!', 1);
+(4, 29, 'ankit', 'ghimire', 'twoingammer@gmail.com', 9812698296, 'Student', 1, 1, 1, 'Please i am poor help me!!!!!!!!!!!!!!!!!!!!!!!!!!', 1),
+(5, 31, 'Prabin', 'Lamichhane', 'bhimlamichhane2022@gmail.com', 9865698621, 'Student', 3, 2, 3, 'Please contact first', 0);
 
 -- --------------------------------------------------------
 
@@ -378,7 +396,8 @@ INSERT INTO `user` (`id`, `username`, `password`, `created_on`, `status`, `role_
 (26, 'prabin700003@gmail.com', 'Prabin@123', '2025-09-04', '1', 1),
 (28, 'secondsonly3423@gmail.com', 'lalChi123?', '2025-09-08', '1', 1),
 (29, 'twoingammer@gmail.com', 'Ankit@123', '2025-09-08', '1', 4),
-(30, 'thahaxamalai@gmail.com', 'pradipLc123', '2025-09-08', '1', 4);
+(30, 'thahaxamalai@gmail.com', 'pradipLc123', '2025-09-08', '1', 4),
+(31, 'bhimlamichhane2022@gmail.com', 'SunSun@123', '2025-09-27', '1', 4);
 
 -- --------------------------------------------------------
 
@@ -403,7 +422,7 @@ CREATE TABLE `visa_application` (
 --
 
 INSERT INTO `visa_application` (`id`, `client_id`, `agent_id`, `country_id`, `university_id`, `program_id`, `progress`, `apply_date`, `status`) VALUES
-(1, 7, 1, 3, 2, 3, 'rejected', '2025-07-08', 1),
+(1, 7, 1, 3, 2, 3, 'in progress', '2025-07-08', 1),
 (2, 8, 1, 2, 3, 5, 'in progress', '2025-07-10', 1),
 (3, 9, 2, 3, 2, 4, 'in progress', '2025-07-10', 1),
 (4, 10, 2, 2, 3, 6, 'completed', '2025-07-10', 1),
@@ -554,7 +573,7 @@ ALTER TABLE `agent_report`
 -- AUTO_INCREMENT for table `chat_message`
 --
 ALTER TABLE `chat_message`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `client`
@@ -602,7 +621,7 @@ ALTER TABLE `university`
 -- AUTO_INCREMENT for table `unverified`
 --
 ALTER TABLE `unverified`
-  MODIFY `uv_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `uv_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `unverified_agent`
@@ -614,7 +633,7 @@ ALTER TABLE `unverified_agent`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `visa_application`

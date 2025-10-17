@@ -1,54 +1,103 @@
-import pymysql
 import os
+import pymysql
 
-SQL_FILE = os.path.join("app", "backend", "db_crm.sql")
+SQL_DUMP_PATH = os.path.join(os.path.dirname(__file__), "db_crm.sql")
 
-def create_db_and_import():
-    conn = pymysql.connect(
-        host="localhost",
-        user="root",
-        password=""
-    )
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("CREATE DATABASE IF NOT EXISTS db_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
-        conn.commit()
-    finally:
-        conn.close()
 
-    conn = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="",
-        db="db_crm",
-        autocommit=True,
-        cursorclass=pymysql.cursors.DictCursor
-    )
+DB_NAME = "db_crm"
 
-    try:
-        with conn.cursor() as cursor:
-            with open(SQL_FILE, "r", encoding="utf-8") as f:
-                sql_commands = f.read()
-
-            commands = sql_commands.split(";")
-
-            for command in commands:
-                command = command.strip()
-                if command and not command.startswith("--") and not command.startswith("/*"):
-                    try:
-                        cursor.execute(command)
-                    except Exception as e:
-                        print(f"⚠️ Skipped: {command[:50]}...  -> {e}")
-    finally:
-        conn.close()
-
-def get_connection():
-    create_db_and_import()
-
+def _connect_server():
+    """Connect to MySQL server without specifying any database."""
     return pymysql.connect(
         host="localhost",
         user="root",
         password="",
-        db="db_crm",
         cursorclass=pymysql.cursors.DictCursor
     )
+
+def _database_exists():
+    """Return True if DB exists."""
+    conn = _connect_server()
+    with conn.cursor() as cursor:
+        cursor.execute("SHOW DATABASES LIKE %s", (DB_NAME,))
+        exists = cursor.fetchone() is not None
+    conn.close()
+    return exists
+
+def _table_count():
+    """Return table count if DB exists, else 0."""
+    if not _database_exists():
+        return 0
+    conn = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="",
+        db=DB_NAME,
+        cursorclass=pymysql.cursors.DictCursor
+    )
+    with conn.cursor() as cursor:
+        cursor.execute("SHOW TABLES")
+        count = len(cursor.fetchall())
+    conn.close()
+    return count
+
+def _import_sql_dump():
+    """Import the SQL dump file (creates DB if missing)."""
+    print("🔁 Importing SQL dump... Please wait.")
+    with open(SQL_DUMP_PATH, "r", encoding="utf-8") as f:
+        sql_content = f.read()
+
+    conn = _connect_server()
+    cursor = conn.cursor()
+
+    # Run each SQL statement one by one
+    statements = sql_content.split(';')
+    for stmt in statements:
+        stmt = stmt.strip()
+        if not stmt or stmt.startswith('--') or stmt.startswith('/*'):
+            continue
+        try:
+            cursor.execute(stmt)
+        except Exception as e:
+            # Ignore known harmless system commands
+            if not stmt.lower().startswith(("set ", "/*!")):
+                print(f"⚠️ Skipped statement due to error: {e}")
+
+    conn.commit()
+    conn.close()
+    print("✅ Database and tables successfully imported.")
+
+# ------------------------------
+# 🔹 Main Function
+# ------------------------------
+
+def get_connection():
+    """
+    Ensures db_crm exists and is populated.
+    Returns a working pymysql connection.
+    """
+
+    # Check if database exists
+    if not _database_exists():
+        print(f"⚠️ Database '{DB_NAME}' not found — importing from SQL file...")
+        _import_sql_dump()
+
+    # Check if tables exist
+    elif _table_count() == 0:
+        print(f"⚠️ No tables found in '{DB_NAME}' — importing structure...")
+        _import_sql_dump()
+
+    # Return working connection (only now DB is guaranteed to exist)
+    try:
+        conn = pymysql.connect(
+            host="localhost",
+            user="root",
+            password="",
+            db=DB_NAME,
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return conn
+    except pymysql.err.OperationalError as e:
+        # Failsafe in case import failed
+        print(f"❌ Connection failed even after import: {e}")
+        raise
