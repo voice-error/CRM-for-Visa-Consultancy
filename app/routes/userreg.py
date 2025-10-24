@@ -7,19 +7,23 @@ app.config['SECRET_KEY'] = secrets.token_hex(16)
 
 @app.route("/userreg", methods =["GET", "POST"])
 def register():
-    if request.method =="POST" :      
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        phone = request.form.get("phone")
-        username_input = request.form.get("email")
-        password_input = request.form.get("password")
-        message = request.form.get("notes")
-        program_id = request.form.get("program")
-        visa_type = request.form.get("visa_type")
-        country_id = request.form.get("country")
-        university_id = request.form.get("university")
+    if request.method =="POST" :
+        try:      
+            first_name = request.form.get("first_name")
+            last_name = request.form.get("last_name")
+            phone = request.form.get("phone")
+            username_input = request.form.get("email")
+            username_input = username_input.lower()
+            password_input = request.form.get("password")
+            message = request.form.get("notes")
+            program_id = request.form.get("program")
+            visa_type = request.form.get("visa_type")
+            country_id = request.form.get("country")
+            university_id = request.form.get("university")
+        except:
+            flash('Error: {}'.format(e), 'danger')
+            return render_template("userregistration.html")
 
-        
         try:
             with get_connection() as conn:
                 with conn.cursor() as cursor:
@@ -43,19 +47,22 @@ def register():
                         flash('User already exists','danger')                   
         except Exception as e:
             flash('Error: {}'.format(e), 'danger')
-    else:
-        return render_template("userregistration.html")
+    return render_template("userregistration.html")
     
 @app.route("/agentreg", methods =["GET", "POST"])
 def registerAgent():
-    if request.method =="POST" :      
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        phone = request.form.get("phone")
-        username_input = request.form.get("email")
-        password_input = request.form.get("password")
-        message = request.form.get("notes")
-
+    if request.method =="POST" :
+        try:          
+            first_name = request.form.get("first_name")
+            last_name = request.form.get("last_name")
+            phone = request.form.get("phone")
+            username_input = request.form.get("email")
+            username_input = username_input.lower()
+            password_input = request.form.get("password")
+            message = request.form.get("notes")
+        except:
+            flash('Error: {}'.format(e), 'danger')
+            return render_template("agentregistration.html") 
         
         try:
             with get_connection() as conn:
@@ -79,9 +86,8 @@ def registerAgent():
                     else:
                         flash('User already exists','danger')                   
         except Exception as e:
-            flash('Error: {}'.format(e), 'danger')
-    else:
-        return render_template("agentregistration.html")    
+            flash('Please make sure your input is correct', 'danger')
+    return render_template("agentregistration.html")    
     
 
 @app.route("/usertype", methods =["GET", "POST"])
