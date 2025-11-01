@@ -119,7 +119,6 @@ def init_chat_routes(app, socketio):
                     flash('Access denied.', 'danger')
                     return redirect(url_for("index"))
 
-                # SQL QUERY TO FETCH ALL MESSAGES 
 
                 sql = """
                     SELECT
@@ -147,8 +146,8 @@ def init_chat_routes(app, socketio):
             flash(f'Error loading chat: {e}', 'danger')
             return redirect(url_for("index"))
 
-        # Now both agents and clients use the same template with the complete message list
-        return render_template("chatwithagent.html", room_id=room_id, messages=messages,current_username=session.get("first_name"))
+        
+        return render_template("chatwithagent.html",room_id=room_id, messages=messages,current_username=session.get("first_name"))
 
     def save_message(room_id, sender_id, message):
         try:
@@ -163,24 +162,18 @@ def init_chat_routes(app, socketio):
             return redirect(url_for("index"))
 
     @socketio.on("join")
-    def on_join():
-        role_id = session.get("role_id")   
+    def on_join(data):
+        username = session.get("first_name", "A user")
+        room_id = data.get("room")
 
-        if role_id == 1:  # Client
+        if not room_id:
+            print("Join attempt failed: No room_id provided.")
+            return
+           
 
-            if 'agentko_id' in session and 'room_id' in session:
-                username =session['first_name']
-                room_id = session['room_id']
-                join_room(str(session['room_id']))
-                emit("status", {"msg": "Client" +username+" joined room "},room=str(room_id))
-
-        elif role_id == 2:  # Agent
-
-            if 'clientko_id' in session and 'room_id' in session :
-                username =session['first_name']
-                room_id = session['room_id']
-                join_room(str(session['room_id']))
-                emit("status", {"msg": "Agent" +username+" joined room "},room=str(room_id))
+        join_room(room_id)
+        emit("status", {"msg": f"{username} has joined the room."}, room=room_id)
+        print(f"'{username}' joined room '{room_id}'")
 
     @socketio.on("send_message")
     def handle_message(data):
@@ -193,7 +186,6 @@ def init_chat_routes(app, socketio):
         if not all([user_id, room_id, message]):
             return
 
-        # Save the message to the database (this part is unchanged)
         save_message(room_id, user_id, message)
 
         payload = {
@@ -202,7 +194,4 @@ def init_chat_routes(app, socketio):
             "message": message,
         }
 
-        # --- THIS IS THE CORRECTED LINE ---
-        # Broadcast the message to everyone in the room EXCEPT the sender.
-        # `request.sid` is the unique session ID of the client who sent the message.
         emit("receive_message", payload, room=str(room_id), skip_sid=request.sid)

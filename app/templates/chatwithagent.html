@@ -11,7 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 
-<body>
+<body data-room-id="{{ room_id }}">
   <header>
     <nav class="navbar">
       <div class="logo"><a class='vc' href="{{url_for('index')}}">Visa Consultancy</a></div>
@@ -66,10 +66,10 @@
     crossorigin="anonymous"></script>
   <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Pass both user ID and full name from the server session to JavaScript
+    // Passing both user ID and full name from session to JavaScript
     const currentUserID = "{{ session.user_id }}";
     const currentUserName = "{{ session.get('first_name', '') }} {{ session.get('last_name', '') }}".trim();
-    
+    const roomID = document.body.dataset.roomId;
     const socket = io();
     const chatForm = document.getElementById("chat-form");
     const chatInput = document.getElementById("chat-input");
@@ -78,7 +78,7 @@
     function addMessageToBox(data) {
       const messageDiv = document.createElement("div");
       
-      // Determine if the message is from the current user or someone else
+      // check the message is from the current user or someone else
       const messageClass = String(data.sender_id) === String(currentUserID) 
         ? 'user-message' 
         : 'agent-message';
@@ -86,7 +86,7 @@
       messageDiv.className = `chat-message ${messageClass}`;
       
       const strong = document.createElement("strong");
-      // Use sender_name which is consistent for both historical and real-time messages
+      // using sender name which is same for both loding old and real-time messages
       strong.textContent = `${data.sender_name}: `; 
       messageDiv.appendChild(strong);
       messageDiv.appendChild(document.createTextNode(data.message));
@@ -97,43 +97,40 @@
 
     socket.on('connect', () => {
       console.log("Connected to server. Joining room...");
-      socket.emit("join");
+      const roomID = document.body.dataset.roomId;
+      if (roomID) {
+        socket.emit("join", { room: roomID });
+      } else {
+        console.error("Could not find Room ID on the page!");
+      }
     });
 
     socket.on("status", data => {
       console.log("Status update:", data.msg);
     });
-
-    // This listener now only handles messages from OTHER users
     socket.on("receive_message", data => {
       addMessageToBox(data);
     });
     
-    // --- THIS IS THE MAJORLY CHANGED PART ---
     chatForm.addEventListener('submit', function (e) {
       e.preventDefault(); 
       const message = chatInput.value.trim();
 
       if (message) {
-        // 1. Create the message data object for immediate display
         const selfMessageData = {
           sender_id: currentUserID,
           sender_name: currentUserName,
           message: message
         };
 
-        // 2. Add your own message to your chat box immediately
         addMessageToBox(selfMessageData);
 
-        // 3. Send the message to the server for it to broadcast to others
         socket.emit("send_message", { message: message });
         
-        // 4. Clear the input field
         chatInput.value = ""; 
       }
     });
 
-    // Scroll to the bottom on initial page load
     chatBox.scrollTop = chatBox.scrollHeight;
   });
 

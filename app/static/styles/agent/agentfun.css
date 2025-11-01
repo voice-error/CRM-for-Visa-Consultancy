@@ -5,8 +5,17 @@ body {
   padding: 0;
 }
 
-.login-container, .dashboard-container {
+.login-container {
   min-width:1000px;
+  max-width: 1200px;
+  margin: 40px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.dashboard-container {
+  min-width:500px;
   max-width: 1200px;
   margin: 40px auto;
   background: white;
